@@ -2,7 +2,7 @@ import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/clerk-expo";
 import { Link } from "expo-router";
 import { View, StyleSheet, ImageBackground } from "react-native";
 import { Text, Button } from "react-native-paper";
-import matches from '@/assets/images/matches.jpg';
+// import matches from '@/assets/images/matches.jpg';
 
 export default function Page() {
   const { user } = useUser();
@@ -15,9 +15,9 @@ export default function Page() {
       console.error(JSON.stringify(err, null, 2));
     }
   };
-
+  // source={matches}
   return (
-    <ImageBackground source={matches} style={styles.background} resizeMode="cover">
+    <ImageBackground style={styles.background} resizeMode="cover">
       <View style={styles.overlay}>
         <SignedIn>
           <Text style={styles.title}>🌱 Welcome to Carbon Credits App</Text>
@@ -28,9 +28,11 @@ export default function Page() {
             </Text>
           </Text>
 
-          <Button mode="contained" onPress={() => console.log("Go to Dashboard")} style={styles.button}>
-            Go to Dashboard
-          </Button>
+          <Link href="/(tabs)" asChild>
+            <Button mode="contained" style={styles.button}>
+              Go to Dashboard
+            </Button>
+          </Link>
 
           <Button mode="outlined" onPress={handleSignOut} style={styles.button}>
             Sign Out
@@ -39,7 +41,9 @@ export default function Page() {
 
         <SignedOut>
           <Text style={styles.title}>Welcome to Carbon Credits App</Text>
-          <Text style={styles.subtext}>Please sign in or create an account to get started.</Text>
+          <Text style={styles.subtext}>
+            Please sign in or create an account to get started.
+          </Text>
 
           <Link href="/(auth)/sign-in" asChild>
             <Button mode="contained" style={styles.button}>

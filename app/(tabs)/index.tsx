@@ -1,83 +1,40 @@
-import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
+import { Image, StyleSheet, Platform } from 'react-native';
+
+import { HelloWave } from '@/components/HelloWave';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = () => {
-    // TODO: Add authentication logic here
-    console.log('Logging in with:', email, password);
-  };
-
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>Carbon Credits App</ThemedText>
-
-      <TextInput
-        placeholder="Email"
-        placeholderTextColor="#888"
-        style={styles.input}
-        autoCapitalize="none"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-
-      <TextInput
-        placeholder="Password"
-        placeholderTextColor="#888"
-        style={styles.input}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Log In</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity>
-        <Text style={styles.link}>Forgot Password?</Text>
-      </TouchableOpacity>
-    </ThemedView>
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerImage={
+        <Image
+          source={require('@/assets/images/partial-react-logo.png')}
+          style={styles.reactLogo}
+        />
+      }>
+      
+    </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 24,
-    justifyContent: 'center',
-    flex: 1,
-    gap: 16,
-  },
-  title: {
-    textAlign: 'center',
-    marginBottom: 32,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: '#2E7D32',
-    padding: 14,
-    borderRadius: 10,
+  titleContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 8,
   },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
   },
-  link: {
-    color: '#1976D2',
-    textAlign: 'center',
-    marginTop: 12,
+  reactLogo: {
+    height: 178,
+    width: 290,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
   },
 });
