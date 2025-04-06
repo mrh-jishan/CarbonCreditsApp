@@ -2,13 +2,16 @@ import { Tabs } from "expo-router/tabs";
 import { useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 
-type UserRole = "employee" | "employer" | "admin" | "representative";
-
-const userRole: UserRole = "representative";
-
 export default function Layout() {
   const { user } = useUser();
-  console.log("user---------", user);
+  const roles =
+    user?.organizationMemberships?.map((membership) => membership.role) || [];
+
+  const isAdmin = roles.includes("org:carbon_credits_admin");
+  const isEmployee = roles.includes("org:carbon_credits_employee");
+  const isEmployer = roles.includes("org:carbon_credits_employer");
+  const isRepresentative = roles.includes("org:carbon_credits_representative");
+
   return (
     <Tabs>
       <Tabs.Screen
@@ -34,8 +37,8 @@ export default function Layout() {
       <Tabs.Screen
         name="employee"
         options={{
-          title: "Dashboard",
-          href: userRole === "employee" ? undefined : null,
+          title: "Profile",
+          href: isEmployee ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" color={color} size={size} />
           ),
@@ -45,7 +48,7 @@ export default function Layout() {
         name="commute"
         options={{
           title: "Commute",
-          href: userRole === "employee" ? undefined : null,
+          href: isEmployee ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="car-outline" color={color} size={size} />
           ),
@@ -55,7 +58,7 @@ export default function Layout() {
         name="credits"
         options={{
           title: "Credits",
-          href: userRole === "employee" ? undefined : null,
+          href: isEmployee ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="wallet-outline" color={color} size={size} />
           ),
@@ -67,7 +70,7 @@ export default function Layout() {
         name="employer"
         options={{
           title: "Dashboard",
-          href: userRole === "employer" ? undefined : null,
+          href: isEmployer ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="briefcase-outline" color={color} size={size} />
           ),
@@ -77,7 +80,7 @@ export default function Layout() {
         name="employees"
         options={{
           title: "Employees",
-          href: userRole === "employer" ? undefined : null,
+          href: isEmployer ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" color={color} size={size} />
           ),
@@ -87,7 +90,7 @@ export default function Layout() {
         name="trading"
         options={{
           title: "Trading",
-          href: userRole === "employer" ? undefined : null,
+          href: isEmployer ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name="swap-horizontal-outline"
@@ -101,7 +104,7 @@ export default function Layout() {
         name="reports"
         options={{
           title: "Reports",
-          href: userRole === "employer" ? undefined : null,
+          href: isEmployer ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="document-text-outline" color={color} size={size} />
           ),
@@ -113,7 +116,7 @@ export default function Layout() {
         name="admin"
         options={{
           title: "Admin",
-          href: userRole === "admin" ? undefined : null,
+          href: isAdmin ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" color={color} size={size} />
           ),
@@ -123,7 +126,7 @@ export default function Layout() {
         name="fraud"
         options={{
           title: "Fraud",
-          href: userRole === "admin" ? undefined : null,
+          href: isAdmin ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons
               name="shield-checkmark-outline"
@@ -137,7 +140,7 @@ export default function Layout() {
         name="logs"
         options={{
           title: "Logs",
-          href: userRole === "admin" ? undefined : null,
+          href: isAdmin ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="file-tray-full-outline" color={color} size={size} />
           ),
@@ -149,7 +152,7 @@ export default function Layout() {
         name="representative"
         options={{
           title: "Dashboard",
-          href: userRole === "representative" ? undefined : null,
+          href: isRepresentative ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-circle-outline" color={color} size={size} />
           ),
@@ -159,7 +162,7 @@ export default function Layout() {
         name="transactions"
         options={{
           title: "Validation",
-          href: userRole === "representative" ? undefined : null,
+          href: isRepresentative ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="checkmark-done-outline" color={color} size={size} />
           ),
@@ -169,7 +172,7 @@ export default function Layout() {
         name="audit"
         options={{
           title: "Audit",
-          href: userRole === "representative" ? undefined : null,
+          href: isRepresentative ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="clipboard-outline" color={color} size={size} />
           ),
