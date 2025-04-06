@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function Rewards() {
+export default function Audit() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Rewards Screen</Text>
+      <Text style={styles.text}>Audit Screen</Text>
     </View>
   );
 }
