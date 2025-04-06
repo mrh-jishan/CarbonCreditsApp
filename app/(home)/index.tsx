@@ -28,7 +28,7 @@ export default function Page() {
             </Text>
           </Text>
 
-          <Link href="/(tabs)" asChild>
+          <Link href="/(settings)/profile" asChild>
             <Button mode="contained" style={styles.button}>
               Go to Dashboard
             </Button>
