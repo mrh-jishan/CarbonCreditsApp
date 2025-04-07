@@ -154,10 +154,10 @@ export default function Layout() {
       <Tabs.Screen
         name="transactions"
         options={{
-          title: "Validation",
+          title: "Transactions",
           href: isRepresentative ? undefined : null,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="checkmark-done-outline" color={color} size={size} />
+            <Ionicons name="cash-outline" color={color} size={size} />
           ),
         }}
       />
