@@ -1,16 +1,9 @@
 import { Tabs } from "expo-router/tabs";
-import { useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import { useRoles } from "@/hooks/useRoles";
 
 export default function Layout() {
-  const { user } = useUser();
-  const roles =
-    user?.organizationMemberships?.map((membership) => membership.role) || [];
-
-  const isAdmin = roles.includes("org:carbon_credits_admin");
-  const isEmployee = roles.includes("org:carbon_credits_employee");
-  const isEmployer = roles.includes("org:carbon_credits_employer");
-  const isRepresentative = roles.includes("org:carbon_credits_representative");
+  const { isAdmin, isEmployee, isEmployer, isRepresentative } = useRoles();
 
   return (
     <Tabs>
