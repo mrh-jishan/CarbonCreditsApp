@@ -1,9 +1,18 @@
 import { Tabs } from "expo-router/tabs";
+import { Stack } from "expo-router/stack";
 import { Ionicons } from "@expo/vector-icons";
 import { useRoles } from "@/hooks/useRoles";
+import { Redirect } from "expo-router";
+import { SignedIn, SignedOut, useClerk, useUser, useAuth } from "@clerk/clerk-expo";
+import { View } from "react-native";
 
 export default function Layout() {
+  const { isSignedIn } = useAuth();
   const { isAdmin, isEmployee, isEmployer, isRepresentative } = useRoles();
+
+  if (!isSignedIn) {
+    return <Redirect href="/(auth)/sign-in" />;
+  }
 
   return (
     <Tabs>
