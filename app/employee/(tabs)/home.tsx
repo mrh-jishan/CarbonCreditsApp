@@ -1,6 +1,5 @@
-import { useRoles } from "@/hooks/useRoles";
-import { SignedIn, SignedOut, useClerk, useUser } from "@clerk/clerk-expo";
-import { Link, useRouter } from "expo-router";
+import { useClerk, useUser } from "@clerk/clerk-expo";
+import { useRouter } from "expo-router";
 import { View, StyleSheet, ImageBackground } from "react-native";
 import { Text, Button } from "react-native-paper";
 
@@ -8,8 +7,6 @@ export default function Page() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
-
-  const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
 
   const handleSignOut = async () => {
     try {
@@ -33,49 +30,31 @@ export default function Page() {
             Welcome, {user?.firstName || "User"}!
           </Text>
 
-          <Text>Logged in as Admin</Text>
-
-          {/* Role-Specific Summary */}
-          {isEmployee && (
-            <Text>You earned {employeeCredits} credits this month!</Text>
-          )}
-          {isEmployer && (
-            <Text>Your company saved {companyCredits} credits!</Text>
-          )}
-          {isAdmin && <Text>System-wide credits: {systemCredits}</Text>}
+          <Text>You earned {employeeCredits} credits this month!</Text>
 
           {/* Quick Actions */}
           <View style={{ marginTop: 16 }}>
             <Button
               mode="contained"
-              onPress={() => router.navigate("/(tabs)/commute")}
+              onPress={() => router.navigate("/employee/(tabs)/commute")}
               style={{ marginBottom: 8 }}
             >
               Track Commute
             </Button>
             <Button
               mode="contained"
-              onPress={() => router.navigate("/(tabs)/analytics")}
+              onPress={() => router.navigate("/employee/(tabs)/analytics")}
               style={{ marginBottom: 8 }}
             >
               View Analytics
             </Button>
             <Button
               mode="contained"
-              onPress={() => router.navigate("/(tabs)/trading")}
+              onPress={() => router.navigate("/employee/(tabs)/credits")}
               style={{ marginBottom: 8 }}
             >
               Trade Credits
             </Button>
-          </View>
-
-          {/* Notifications */}
-          <View style={{ marginTop: 16 }}>
-            <Text style={{ fontWeight: "bold" }}>Notifications:</Text>
-            {isEmployer && <Text>3 employees pending approval</Text>}
-            {isAdmin && (
-              <Text>Fraud alert: 1 suspicious activity detected</Text>
-            )}
           </View>
         </View>
 
