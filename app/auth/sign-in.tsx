@@ -4,7 +4,7 @@ import { Text, TextInput, Button } from "react-native-paper";
 import React from "react";
 import { View } from "react-native";
 
-export default function Page() {
+export default function SignIn() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
 
@@ -31,32 +31,33 @@ export default function Page() {
   }, [isLoaded, emailAddress, password]);
 
   return (
-    <View style={{ padding: 20 }}>
-      {/* Back Button */}
-      <Button onPress={() => router.back()} mode="text">
-        ← Back
-      </Button>
-
-      <TextInput
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter your email"
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-      />
-      <TextInput
-        value={password}
-        placeholder="Enter your password"
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <Button onPress={onSignInPress} mode="contained" style={{ marginTop: 16 }}>
+    <View style={{ padding: 20, flex: 1, justifyContent: "center" }}>
+      <View style={{ gap: 8, display: "flex" }}>
+        <TextInput
+          autoCapitalize="none"
+          value={emailAddress}
+          placeholder="Enter your email"
+          onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
+        />
+        <TextInput
+          value={password}
+          placeholder="Enter your password"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+        />
+      </View>
+      <Button
+        onPress={onSignInPress}
+        mode="contained"
+        style={{ marginTop: 16 }}
+      >
         Sign in
       </Button>
 
       <View style={{ marginTop: 24, alignItems: "center" }}>
         <Text>Don't have an account?</Text>
-        <Link href="/sign-up">
-          <Text style={{ color: "blue" }}>Sign up</Text>
+        <Link href="/auth/sign-up">
+          <Text style={{ color: "blue" }}>Sign Up</Text>
         </Link>
       </View>
     </View>

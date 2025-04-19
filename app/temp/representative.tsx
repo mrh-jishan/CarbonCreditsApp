@@ -2,10 +2,10 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Card, Button } from "react-native-paper";
 
-export default function Representative() {
+export default function Bank() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Representative Dashboard</Text>
+      <Text style={styles.header}>Bank Dashboard</Text>
 
       {/* Pending Approvals */}
       <Card style={styles.card}>

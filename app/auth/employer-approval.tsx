@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function Transactions() {
+export default function EmployerApproval() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Transactions Screen</Text>
+      <Text style={styles.text}>
+        Employer Approval Screen where registration will be approved
+      </Text>
     </View>
   );
 }

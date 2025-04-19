@@ -4,9 +4,9 @@ import { Avatar, Card, Button } from "react-native-paper";
 import { useUser } from "@clerk/clerk-expo";
 import { useRoles } from "@/hooks/useRoles";
 
-export default function Employee() {
+export default function ProfileDetails() {
   const { user } = useUser();
-  const { isAdmin, isEmployee, isEmployer, isRepresentative } = useRoles();
+  const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -14,18 +14,20 @@ export default function Employee() {
       <View style={styles.profileHeader}>
         <Avatar.Text
           size={80}
-          label={user?.firstName?.[0] || '' + user?.lastName?.[0] || "U"}
+          label={user?.firstName?.[0] || "" + user?.lastName?.[0] || "U"}
           style={styles.avatar}
         />
         <Text style={styles.name}>
           {user?.firstName} {user?.lastName}
         </Text>
-        <Text style={styles.email}>{user?.emailAddresses?.[0]?.emailAddress}</Text>
+        <Text style={styles.email}>
+          {user?.emailAddresses?.[0]?.emailAddress}
+        </Text>
         <Text style={styles.role}>
           {isAdmin && "Admin"}
           {isEmployee && "Employee"}
           {isEmployer && "Employer"}
-          {isRepresentative && "Representative"}
+          {isBank && "Bank"}
         </Text>
       </View>
 

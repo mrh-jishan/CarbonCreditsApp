@@ -9,7 +9,7 @@ export default function Page() {
   const { signOut } = useClerk();
   const router = useRouter();
 
-  const { isAdmin, isEmployee, isEmployer, isRepresentative } = useRoles();
+  const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
 
   const handleSignOut = async () => {
     try {

@@ -11,7 +11,7 @@ export const useRoles = () => {
   const isAdmin = roles.includes("org:carbon_credits_admin");
   const isEmployee = roles.includes("org:carbon_credits_employee");
   const isEmployer = roles.includes("org:carbon_credits_employer");
-  const isRepresentative = roles.includes("org:carbon_credits_representative");
+  const isBank = roles.includes("org:carbon_credits_bank");
 
-  return { roles, isAdmin, isEmployee, isEmployer, isRepresentative };
+  return { roles, isAdmin, isEmployee, isEmployer, isBank };
 };

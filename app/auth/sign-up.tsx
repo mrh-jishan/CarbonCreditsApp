@@ -2,7 +2,7 @@ import * as React from "react";
 import { Text, TextInput, Button } from "react-native-paper";
 import { View } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -33,7 +33,9 @@ export default function SignUpScreen() {
     if (!isLoaded) return;
 
     try {
-      const signUpAttempt = await signUp.attemptEmailAddressVerification({ code });
+      const signUpAttempt = await signUp.attemptEmailAddressVerification({
+        code,
+      });
 
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
@@ -48,41 +50,49 @@ export default function SignUpScreen() {
 
   if (pendingVerification) {
     return (
-      <View style={{ padding: 20 }}>
-        <Button onPress={() => router.back()} mode="text">
-          ← Back
-        </Button>
-        <Text>Verify your email</Text>
+      <View style={{ padding: 20, flex: 1, justifyContent: "center", gap: 8 }}>
         <TextInput
           value={code}
           placeholder="Enter your verification code"
           onChangeText={(code) => setCode(code)}
         />
-        <Button onPress={onVerifyPress} mode="contained">Verify</Button>
+        <Button onPress={onVerifyPress} mode="contained">
+          Verify
+        </Button>
       </View>
     );
   }
 
   return (
-    <View style={{ padding: 20 }}>
-      <Button onPress={() => router.back()} mode="text">
-        ← Back
+    <View style={{ padding: 20, flex: 1, justifyContent: "center" }}>
+      <View style={{ gap: 8, display: "flex" }}>
+        <TextInput
+          autoCapitalize="none"
+          value={emailAddress}
+          placeholder="Enter email"
+          onChangeText={(email) => setEmailAddress(email)}
+        />
+        <TextInput
+          value={password}
+          placeholder="Enter password"
+          secureTextEntry={true}
+          onChangeText={(password) => setPassword(password)}
+        />
+      </View>
+      <Button
+        onPress={onSignUpPress}
+        mode="contained"
+        style={{ marginTop: 16 }}
+      >
+        Register
       </Button>
 
-      <Text>Sign up</Text>
-      <TextInput
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        onChangeText={(email) => setEmailAddress(email)}
-      />
-      <TextInput
-        value={password}
-        placeholder="Enter password"
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <Button onPress={onSignUpPress} mode="contained">Continue</Button>
+      <View style={{ marginTop: 24, alignItems: "center" }}>
+        <Text>Already have an account?</Text>
+        <Link href="/auth/sign-in">
+          <Text style={{ color: "blue" }}>Sign In</Text>
+        </Link>
+      </View>
     </View>
   );
 }
