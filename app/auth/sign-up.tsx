@@ -1,17 +1,29 @@
-import * as React from "react";
+import { useState } from "react";
 import { Text, TextInput, Button } from "react-native-paper";
-import { View } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
+import DropDownPicker from "react-native-dropdown-picker";
+
+const ROLES = [
+  { label: "Employee", value: "employee" },
+  { label: "Employer", value: "employer" },
+  { label: "Representative", value: "representative" },
+];
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
-  const [emailAddress, setEmailAddress] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [pendingVerification, setPendingVerification] = React.useState(false);
-  const [code, setCode] = React.useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const [pendingVerification, setPendingVerification] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [code, setCode] = useState("");
+  const [role, setRole] = useState("employee");
+  const [open, setOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const onSignUpPress = async () => {
     if (!isLoaded) return;
@@ -20,12 +32,18 @@ export default function SignUpScreen() {
       await signUp.create({
         emailAddress,
         password,
+        firstName,
+        lastName,
+        unsafeMetadata: {
+          role: role,
+        },
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
       setPendingVerification(true);
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
+      setErrorMessage("An error occurred during sign-up.");
     }
   };
 
@@ -42,9 +60,11 @@ export default function SignUpScreen() {
         router.replace("/");
       } else {
         console.error(JSON.stringify(signUpAttempt, null, 2));
+        setErrorMessage("Verification failed. Please try again.");
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
+      setErrorMessage("An error occurred during verification.");
     }
   };
 
@@ -64,8 +84,36 @@ export default function SignUpScreen() {
   }
 
   return (
-    <View style={{ padding: 20, flex: 1, justifyContent: "center" }}>
-      <View style={{ gap: 8, display: "flex" }}>
+    <View style={styles.container}>
+      {/* <View style={{ gap: 8, display: "flex" }}> */}
+      <Image
+        source={require("../../assets/images/react-logo.png")} // Replace with your logo path
+        style={styles.logo}
+      />
+
+      <View style={styles.inputContainer}>
+        <DropDownPicker
+          open={open}
+          setOpen={setOpen}
+          value={role}
+          setValue={setRole}
+          items={ROLES}
+        />
+
+        <TextInput
+          autoCapitalize="none"
+          value={firstName}
+          placeholder={`Enter ${role} first name`}
+          onChangeText={(firstName) => setFirstName(firstName)}
+        />
+
+        <TextInput
+          autoCapitalize="none"
+          value={lastName}
+          placeholder={`Enter ${role} last name`}
+          onChangeText={(lastName) => setLastName(lastName)}
+        />
+
         <TextInput
           autoCapitalize="none"
           value={emailAddress}
@@ -79,6 +127,9 @@ export default function SignUpScreen() {
           onChangeText={(password) => setPassword(password)}
         />
       </View>
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
       <Button
         onPress={onSignUpPress}
         mode="contained"
@@ -87,7 +138,7 @@ export default function SignUpScreen() {
         Register
       </Button>
 
-      <View style={{ marginTop: 24, alignItems: "center" }}>
+      <View style={styles.signUpContainer}>
         <Text>Already have an account?</Text>
         <Link href="/auth/sign-in">
           <Text style={{ color: "blue" }}>Sign In</Text>
@@ -96,3 +147,24 @@ export default function SignUpScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputContainer: { width: "100%", gap: 8 },
+  errorText: {
+    color: "red",
+    marginVertical: 8,
+    textAlign: "center",
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  signUpContainer: { marginTop: 24, alignItems: "center" },
+});
