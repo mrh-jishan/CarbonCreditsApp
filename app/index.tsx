@@ -1,5 +1,5 @@
 import { useRoles } from "@/hooks/useRoles";
-import { Redirect, Slot } from "expo-router";
+import { Redirect } from "expo-router";
 
 export default function PageRedirect() {
   const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
@@ -20,5 +20,5 @@ export default function PageRedirect() {
     return <Redirect href={"/bank/(tabs)/home"} />;
   }
 
-  return <Slot />;
+  return <Redirect href="/auth/sign-in" />;
 }
