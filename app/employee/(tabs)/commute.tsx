@@ -8,18 +8,19 @@ import {
   ActivityIndicator,
 } from "react-native-paper";
 import * as Location from "expo-location";
+import * as TaskManager from "expo-task-manager";
 import { ScrollView } from "react-native";
+
+const LOCATION_TASK_NAME = "background-location-task";
 
 export default function Commute() {
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("");
   const [selectedMode, setSelectedMode] = useState("");
   const [isTracking, setIsTracking] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState<any>(null);
-  const [speed, setSpeed] = useState(0);
 
   useEffect(() => {
-    const startTracking = async () => {
+    const checkPermissionsAndStartTracking = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(
@@ -29,24 +30,21 @@ export default function Commute() {
         return;
       }
 
-      // Start location tracking
-      Location.watchPositionAsync(
-        {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 1000, // Update every second
-          distanceInterval: 1, // Update every meter
-        },
-        (location) => {
-          setCurrentLocation(location.coords);
-          setSpeed(location.coords.speed || 0); // Speed in meters/second
-        }
-      );
+      const backgroundStatus =
+        await Location.requestBackgroundPermissionsAsync();
+      if (backgroundStatus.status !== "granted") {
+        Alert.alert(
+          "Permission Denied",
+          "Background location permission is required to track your commute in the background."
+        );
+        return;
+      }
     };
 
-    startTracking();
+    checkPermissionsAndStartTracking();
   }, []);
 
-  const handleTrackCommute = async () => {
+  const handleStartCommute = async () => {
     if (!fromLocation || !toLocation) {
       Alert.alert("Error", "Please fill in both 'From' and 'To' locations.");
       return;
@@ -57,98 +55,44 @@ export default function Commute() {
       return;
     }
 
-    if (!currentLocation) {
-      Alert.alert("Error", "Unable to get current location. Please try again.");
-      return;
-    }
-
     setIsTracking(true);
 
     try {
-      // Validate GPS data with source and destination
-      const isSourceValid = validateLocation(currentLocation, fromLocation);
-      const isDestinationValid = validateLocation(currentLocation, toLocation);
+      await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 100, // Update every second
+        distanceInterval: 1, // Update every meter
+        showsBackgroundLocationIndicator: true,
+      });
 
-      if (!isSourceValid) {
-        Alert.alert(
-          "Error",
-          "Your current location does not match the source location."
-        );
-        return;
-      }
-
-      if (!isDestinationValid) {
-        Alert.alert(
-          "Error",
-          "Your current location does not match the destination location."
-        );
-        return;
-      }
-
-      // Validate speed for mode of transportation
-      const isSpeedValid = validateSpeedForMode(speed, selectedMode);
-      if (!isSpeedValid) {
-        Alert.alert(
-          "Error",
-          "Your speed does not match the selected mode of transportation."
-        );
-        return;
-      }
-
-      // Send data to backend
-      const commuteData = {
-        from: fromLocation,
-        to: toLocation,
-        mode: selectedMode,
-        speed,
-        currentLocation,
-      };
-
-      await sendCommuteDataToBackend(commuteData);
-
-      Alert.alert("Success", "Commute tracked successfully!");
-      setFromLocation("");
-      setToLocation("");
-      setSelectedMode("");
+      Alert.alert(
+        "Tracking Started",
+        "Commute tracking has started. Please end the commute when you reach your destination."
+      );
     } catch (error) {
-      console.error("Error tracking commute:", error);
-      Alert.alert("Error", "Failed to track commute. Please try again.");
-    } finally {
+      console.error("Error starting commute tracking:", error);
+      Alert.alert(
+        "Error",
+        "Failed to start commute tracking. Please try again."
+      );
       setIsTracking(false);
     }
   };
 
-  const validateLocation = (currentLocation: any, targetLocation: any) => {
-    // Placeholder for location validation logic
-    // Compare currentLocation with targetLocation (e.g., using geocoding APIs)
-    return true; // Assume valid for now
-  };
+  const handleEndCommute = async () => {
+    try {
+      await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
 
-  const validateSpeedForMode = (speed: number, mode: string) => {
-    // Validate speed based on mode of transportation
-    switch (mode) {
-      case "public_transport":
-        return speed > 5 && speed < 20; // Example: 5-20 m/s for public transport
-      case "carpooling":
-        return speed > 5 && speed < 30; // Example: 5-30 m/s for carpooling
-      case "work_from_home":
-        return speed === 0; // Speed should be 0 for working from home
-      case "private_vehicle":
-        return speed > 10 && speed < 40; // Example: 10-40 m/s for private vehicles
-      default:
-        return false;
+      Alert.alert("Success", "Commute tracking has ended.");
+      setFromLocation("");
+      setToLocation("");
+      setSelectedMode("");
+    } catch (error) {
+      console.error("Error ending commute tracking:", error);
+      Alert.alert("Error", "Failed to end commute tracking. Please try again.");
+    } finally {
+      setIsTracking(false);
     }
-  };
-
-  const sendCommuteDataToBackend = async (data: any) => {
-    // Placeholder for sending data to the backend
-    console.log("Sending data to backend:", data);
-    // Example API call
-    // await fetch("https://your-backend-api.com/commute", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(data),
-    // });
   };
 
   return (
@@ -199,15 +143,24 @@ export default function Commute() {
           </Card.Content>
         </Card>
 
-        {/* Track Commute Button */}
-        <Button
-          mode="contained"
-          onPress={handleTrackCommute}
-          style={styles.trackButton}
-          disabled={isTracking}
-        >
-          {isTracking ? "Tracking..." : "Track Commute"}
-        </Button>
+        {/* Start and End Commute Buttons */}
+        {!isTracking ? (
+          <Button
+            mode="contained"
+            onPress={handleStartCommute}
+            style={styles.trackButton}
+          >
+            Start Commute
+          </Button>
+        ) : (
+          <Button
+            mode="contained"
+            onPress={handleEndCommute}
+            style={styles.trackButton}
+          >
+            End Commute
+          </Button>
+        )}
 
         {/* Loading Indicator */}
         {isTracking && (
@@ -217,6 +170,38 @@ export default function Commute() {
     </ScrollView>
   );
 }
+
+// Define the background task
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }: any) => {
+  if (error) {
+    console.error("Error in background location task:", error);
+    return;
+  }
+
+  if (data) {
+    const { locations } = data;
+    const location = locations[0];
+
+    if (location) {
+      const speed = location.coords.speed || 0;
+      const backendData = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        speed,
+        timestamp: new Date().toISOString(),
+      };
+
+      console.log("Sending location data to backend:", backendData);
+
+      // Example API call to send location data to the backend
+      // await fetch("https://your-backend-api.com/location", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(backendData),
+      // });
+    }
+  }
+});
 
 const styles = StyleSheet.create({
   scrollContainer: {
