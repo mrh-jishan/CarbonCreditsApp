@@ -43,10 +43,10 @@ export default function Page() {
             </Button>
             <Button
               mode="contained"
-              onPress={() => router.navigate("/admin/(tabs)/employers")}
+              onPress={() => router.navigate("/admin/(tabs)/users")}
               style={{ marginBottom: 8 }}
             >
-              View Employers
+              View Users
             </Button>
             <Button
               mode="contained"
