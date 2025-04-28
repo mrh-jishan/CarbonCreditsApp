@@ -23,11 +23,11 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="employers"
+        name="users"
         options={{
-          title: "Employers",
+          title: "Users",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bar-chart-outline" color={color} size={size} />
+            <Ionicons name="people-outline" color={color} size={size} />
           ),
         }}
       />

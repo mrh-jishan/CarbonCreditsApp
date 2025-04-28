@@ -3,13 +3,6 @@ import { Text, TextInput, Button } from "react-native-paper";
 import { View, Image, StyleSheet } from "react-native";
 import { useSignUp } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import DropDownPicker from "react-native-dropdown-picker";
-
-const ROLES = [
-  { label: "Employee", value: "employee" },
-  { label: "Employer", value: "employer" },
-  { label: "Representative", value: "representative" },
-];
 
 export default function SignUpScreen() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -21,8 +14,6 @@ export default function SignUpScreen() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [code, setCode] = useState("");
-  const [role, setRole] = useState("employee");
-  const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const onSignUpPress = async () => {
@@ -34,9 +25,6 @@ export default function SignUpScreen() {
         password,
         firstName,
         lastName,
-        unsafeMetadata: {
-          role: role,
-        },
       });
 
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -92,25 +80,17 @@ export default function SignUpScreen() {
       />
 
       <View style={styles.inputContainer}>
-        <DropDownPicker
-          open={open}
-          setOpen={setOpen}
-          value={role}
-          setValue={setRole}
-          items={ROLES}
-        />
-
         <TextInput
           autoCapitalize="none"
           value={firstName}
-          placeholder={`Enter ${role} first name`}
+          placeholder={`Enter first name`}
           onChangeText={(firstName) => setFirstName(firstName)}
         />
 
         <TextInput
           autoCapitalize="none"
           value={lastName}
-          placeholder={`Enter ${role} last name`}
+          placeholder={`Enter last name`}
           onChangeText={(lastName) => setLastName(lastName)}
         />
 

@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { Text, TextInput, Button } from "react-native-paper";
-import { View, Image, StyleSheet, Alert } from "react-native";
-import { useAuth, useSignUp } from "@clerk/clerk-expo";
+import { View, StyleSheet, Alert } from "react-native";
+import { useAuth } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
-import DropDownPicker from "react-native-dropdown-picker";
 
 export default function SignUpScreen() {
-  const { isLoaded, signUp, setActive } = useSignUp();
   const router = useRouter();
 
   const [emailAddress, setEmailAddress] = useState("");
@@ -15,8 +13,6 @@ export default function SignUpScreen() {
   const backendApi = process.env.BACKEND_API_ENDPOINT;
 
   const onSignUpPress = async () => {
-    if (!isLoaded) return;
-
     try {
       // Fetch the token
       const token = await getToken();
