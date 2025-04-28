@@ -1,5 +1,3 @@
-import { Tabs } from "expo-router/tabs";
-import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Stack } from "expo-router";
 import { useAuth } from "@clerk/clerk-expo";
 

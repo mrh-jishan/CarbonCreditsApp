@@ -1,18 +1,21 @@
-import { useSignIn } from "@clerk/clerk-expo";
+import { useAuth, useSignIn } from "@clerk/clerk-expo";
 import { Link, useRouter } from "expo-router";
 import { Text, TextInput, Button } from "react-native-paper";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
+
+const backendApi = process.env.BACKEND_API_ENDPOINT
 
 export default function SignIn() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
+  const { getToken } = useAuth();
 
-  const [emailAddress, setEmailAddress] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [emailAddress, setEmailAddress] = useState("");
+  const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const onSignInPress = React.useCallback(async () => {
+  const onSignInPress = useCallback(async () => {
     if (!isLoaded) return;
     try {
       const signInAttempt = await signIn.create({
@@ -22,6 +25,27 @@ export default function SignIn() {
 
       if (signInAttempt.status === "complete") {
         await setActive({ session: signInAttempt.createdSessionId });
+        const token = await getToken();
+        fetch(`${backendApi}/api/users`, {
+          method: "POST",
+          body: JSON.stringify({
+            email: emailAddress,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the fetched data
+            console.log("data---->", data);
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.error("Error fetching employee data:", error);
+          });
+
         router.replace("/");
       } else {
         console.error(JSON.stringify(signInAttempt, null, 2));

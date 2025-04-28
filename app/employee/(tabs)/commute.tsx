@@ -10,6 +10,7 @@ import {
 import * as Location from "expo-location";
 import * as TaskManager from "expo-task-manager";
 import { ScrollView } from "react-native";
+import { useAuth } from "@clerk/clerk-expo";
 
 const LOCATION_TASK_NAME = "background-location-task";
 
@@ -18,7 +19,7 @@ export default function Commute() {
   const [toLocation, setToLocation] = useState("");
   const [selectedMode, setSelectedMode] = useState("");
   const [isTracking, setIsTracking] = useState(false);
-
+ 
   useEffect(() => {
     const checkPermissionsAndStartTracking = async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -171,12 +172,18 @@ export default function Commute() {
   );
 }
 
+const backendApi = process.env.BACKEND_API_ENDPOINT;
+
 // Define the background task
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }: any) => {
   if (error) {
     console.error("Error in background location task:", error);
     return;
   }
+
+  const { getToken } = useAuth();
+
+  const token = await getToken();
 
   if (data) {
     const { locations } = data;
@@ -194,11 +201,14 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }: any) => {
       console.log("Sending location data to backend:", backendData);
 
       // Example API call to send location data to the backend
-      // await fetch("https://your-backend-api.com/location", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(backendData),
-      // });
+      await fetch(`${backendApi}/locations`, {
+        method: "POST",
+        body: JSON.stringify(backendData),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
     }
   }
 });

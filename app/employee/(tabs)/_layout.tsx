@@ -1,12 +1,10 @@
 import { Tabs } from "expo-router/tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { useRoles } from "@/hooks/useRoles";
 import { Redirect } from "expo-router";
 import { useAuth } from "@clerk/clerk-expo";
 
 export default function Layout() {
   const { isSignedIn } = useAuth();
-  const { isEmployee } = useRoles();
 
   if (!isSignedIn) {
     return <Redirect href="/auth/sign-in" />;
@@ -35,10 +33,9 @@ export default function Layout() {
 
       {/* Employee-Specific Tabs */}
       <Tabs.Screen
-        name="employee"
+        name="profile"
         options={{
           title: "Profile",
-          href: isEmployee ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person-outline" color={color} size={size} />
           ),
@@ -48,7 +45,6 @@ export default function Layout() {
         name="commute"
         options={{
           title: "Commute",
-          href: isEmployee ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="car-outline" color={color} size={size} />
           ),
@@ -58,7 +54,6 @@ export default function Layout() {
         name="credits"
         options={{
           title: "Credits",
-          href: isEmployee ? undefined : null,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="wallet-outline" color={color} size={size} />
           ),

@@ -1,12 +1,84 @@
-import { useClerk, useUser } from "@clerk/clerk-expo";
+import { useAuth, useClerk, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, ImageBackground } from "react-native";
 import { Text, Button } from "react-native-paper";
+
+const backendApi = process.env.BACKEND_API_ENDPOINT
 
 export default function Page() {
   const { user } = useUser();
   const { signOut } = useClerk();
+  const { getToken } = useAuth();
   const router = useRouter();
+  // const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTokenAndData = async () => {
+      try {
+        // Fetch the token
+        const token = await getToken();
+        // setToken(fetchedToken);
+        console.log("Token fetched:", token);
+
+        fetch(`${backendApi}/api/users`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the fetched data
+            console.log("data---->", data);
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.error("Error fetching employee data:", error);
+          });
+
+        // Fetch employee data using the token
+        // const response = await fetch("http://localhost:3000/api/users", {
+        //   method: "GET",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     Authorization: `Bearer ${fetchedToken}`,
+        //   },
+        // });
+
+        // const data = await response.json();
+        // setEmployeeData(data);
+        // console.log("Employee data fetched:", data);
+      } catch (error) {
+        console.error("Error fetching token or employee data:", error);
+      }
+    };
+
+    fetchTokenAndData();
+  }, [getToken]);
+
+  // const token = await getToken();
+  // console.log("token----->", token);
+
+  // useEffect(() => {
+  //   fetch("http://localhost:3000/api/users", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${getToken()}`,
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // Handle the fetched data
+  //       console.log("data---->", data);
+  //     })
+  //     .catch((error) => {
+  //       // Handle any errors
+  //       console.error("Error fetching employee data:", error);
+  //     });
+  // }, []);
 
   const handleSignOut = async () => {
     try {

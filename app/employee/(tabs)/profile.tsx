@@ -14,13 +14,15 @@ export default function Employee() {
       <View style={styles.profileHeader}>
         <Avatar.Text
           size={80}
-          label={user?.firstName?.[0] || '' + user?.lastName?.[0] || "U"}
+          label={user?.firstName?.[0] || "" + user?.lastName?.[0] || "U"}
           style={styles.avatar}
         />
         <Text style={styles.name}>
           {user?.firstName} {user?.lastName}
         </Text>
-        <Text style={styles.email}>{user?.emailAddresses?.[0]?.emailAddress}</Text>
+        <Text style={styles.email}>
+          {user?.emailAddresses?.[0]?.emailAddress}
+        </Text>
         <Text style={styles.role}>
           {isAdmin && "Admin"}
           {isEmployee && "Employee"}
@@ -42,9 +44,6 @@ export default function Employee() {
       <View style={styles.buttonContainer}>
         <Button mode="contained" onPress={() => {}} style={styles.button}>
           Edit Profile
-        </Button>
-        <Button mode="outlined" onPress={() => {}} style={styles.button}>
-          Logout
         </Button>
       </View>
     </ScrollView>
