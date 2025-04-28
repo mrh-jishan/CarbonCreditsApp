@@ -13,6 +13,7 @@
     "build:ios": "eas build --platform ios",
     "build:android:dev": "eas build --platform android --profile preview --local",
     "build:ios:dev": "eas build --platform ios --profile preview --local",
+    "deploy:prod": "netlify deploy --prod --dir dist",
     "test": "jest --watchAll",
     "lint": "expo lint"
   },

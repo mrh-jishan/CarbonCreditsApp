@@ -19,6 +19,9 @@ jobs:
       - name: Install deps
         run: npm install
 
+      - name: Build Expo web app
+        run: npx expo export -p web  
+
       - name: Deploy
         run: npm run deploy:prod
         env:
