@@ -19,9 +19,6 @@ export default function Page() {
     }
   };
 
-  const employeeCredits = 10; // Placeholder for employee credits
-  const companyCredits = 100; // Placeholder for company credits
-  const systemCredits = 1000; // Placeholder for system credits
   // source={matches}
   return (
     <ImageBackground style={styles.background} resizeMode="cover">
@@ -41,47 +38,29 @@ export default function Page() {
               </Text>
             </Text>
 
-            {/* Role-Specific Summary */}
-            {isEmployee && (
-              <Text>You earned {employeeCredits} credits this month!</Text>
-            )}
-            {isEmployer && (
-              <Text>Your company saved {companyCredits} credits!</Text>
-            )}
-            {isAdmin && <Text>System-wide credits: {systemCredits}</Text>}
-
             {/* Quick Actions */}
             <View style={{ marginTop: 16 }}>
               <Button
                 mode="contained"
-                onPress={() => router.navigate("/(tabs)/commute")}
+                onPress={() => router.navigate("/employer/(tabs)/users")}
                 style={{ marginBottom: 8 }}
               >
-                Track Commute
+                Employee List
               </Button>
               <Button
                 mode="contained"
-                onPress={() => router.navigate("/(tabs)/analytics")}
+                onPress={() => router.navigate("/employer/(tabs)/newEmployee")}
                 style={{ marginBottom: 8 }}
               >
-                View Analytics
+                Create new Employee
               </Button>
               <Button
                 mode="contained"
-                onPress={() => router.navigate("/(tabs)/trading")}
+                onPress={() => router.navigate("/employer/(tabs)/profile")}
                 style={{ marginBottom: 8 }}
               >
-                Trade Credits
+                Profile
               </Button>
-            </View>
-
-            {/* Notifications */}
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontWeight: "bold" }}>Notifications:</Text>
-              {isEmployer && <Text>3 employees pending approval</Text>}
-              {isAdmin && (
-                <Text>Fraud alert: 1 suspicious activity detected</Text>
-              )}
             </View>
           </View>
 
@@ -89,25 +68,6 @@ export default function Page() {
             Sign Out
           </Button>
         </SignedIn>
-
-        <SignedOut>
-          <Text style={styles.title}>Welcome to Carbon Credits App</Text>
-          <Text style={styles.subtext}>
-            Please sign in or create an account to get started.
-          </Text>
-
-          <Link href="/(auth)/sign-in" asChild>
-            <Button mode="contained" style={styles.button}>
-              Sign In
-            </Button>
-          </Link>
-
-          <Link href="/(auth)/sign-up" asChild>
-            <Button mode="outlined" style={styles.button}>
-              Sign Up
-            </Button>
-          </Link>
-        </SignedOut>
       </View>
     </ImageBackground>
   );

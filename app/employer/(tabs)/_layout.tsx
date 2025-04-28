@@ -22,46 +22,30 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="analytics"
+        name="profile"
         options={{
-          title: "Analytics",
+          title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bar-chart-outline" color={color} size={size} />
+            <Ionicons name="person-outline" color={color} size={size} />
           ),
         }}
       />
 
-      {/* Employer-Specific Tabs */}
       <Tabs.Screen
-        name="settings"
+        name="users"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="briefcase-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="employees"
-        options={{
-          title: "Employees",
-
+          title: "Users",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="people-outline" color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
-        name="trading"
+        name="newEmployee"
         options={{
-          title: "Trading",
-
+          title: "New Employee",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="swap-horizontal-outline"
-              color={color}
-              size={size}
-            />
+            <Ionicons name="person-add-outline" color={color} size={size} />
           ),
         }}
       />
@@ -69,9 +53,8 @@ export default function Layout() {
         name="reports"
         options={{
           title: "Reports",
-
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="document-text-outline" color={color} size={size} />
+            <Ionicons name="bar-chart-outline" color={color} size={size} />
           ),
         }}
       />

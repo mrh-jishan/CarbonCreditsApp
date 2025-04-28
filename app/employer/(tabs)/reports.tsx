@@ -47,14 +47,6 @@ export default function Reports() {
         </Card.Actions>
       </Card>
 
-      {/* Export Data */}
-      <Button
-        mode="outlined"
-        onPress={() => console.log("Exporting Data")}
-        style={styles.exportButton}
-      >
-        Export Data
-      </Button>
     </ScrollView>
   );
 }
