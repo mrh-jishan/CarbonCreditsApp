@@ -19,10 +19,7 @@ export default function Page() {
     }
   };
 
-  const employeeCredits = 10; // Placeholder for employee credits
-  const companyCredits = 100; // Placeholder for company credits
-  const systemCredits = 1000; // Placeholder for system credits
-  // source={matches}
+
   return (
     <ImageBackground style={styles.background} resizeMode="cover">
       <View style={styles.overlay}>
@@ -30,53 +27,35 @@ export default function Page() {
 
         <View style={{ padding: 16 }}>
           <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-            Welcome, {user?.firstName || "User"}!
+            Welcome, {user?.firstName || "User"} {user?.lastName}!
           </Text>
 
           <Text>Logged in as Admin</Text>
-
-          {/* Role-Specific Summary */}
-          {isEmployee && (
-            <Text>You earned {employeeCredits} credits this month!</Text>
-          )}
-          {isEmployer && (
-            <Text>Your company saved {companyCredits} credits!</Text>
-          )}
-          {isAdmin && <Text>System-wide credits: {systemCredits}</Text>}
 
           {/* Quick Actions */}
           <View style={{ marginTop: 16 }}>
             <Button
               mode="contained"
-              onPress={() => router.navigate("/(tabs)/commute")}
+              onPress={() => router.navigate("/admin/(tabs)/newEmployer")}
               style={{ marginBottom: 8 }}
             >
-              Track Commute
+              Create New Employer
             </Button>
             <Button
               mode="contained"
-              onPress={() => router.navigate("/(tabs)/analytics")}
+              onPress={() => router.navigate("/admin/(tabs)/employers")}
               style={{ marginBottom: 8 }}
             >
-              View Analytics
+              View Employers
             </Button>
             <Button
               mode="contained"
-              onPress={() => router.navigate("/(tabs)/trading")}
+              onPress={() => router.navigate("/admin/(tabs)/profile")}
               style={{ marginBottom: 8 }}
             >
-              Trade Credits
+              Show Profile
             </Button>
-          </View>
-
-          {/* Notifications */}
-          <View style={{ marginTop: 16 }}>
-            <Text style={{ fontWeight: "bold" }}>Notifications:</Text>
-            {isEmployer && <Text>3 employees pending approval</Text>}
-            {isAdmin && (
-              <Text>Fraud alert: 1 suspicious activity detected</Text>
-            )}
-          </View>
+          </View>          
         </View>
 
         <Button mode="outlined" onPress={handleSignOut} style={styles.button}>

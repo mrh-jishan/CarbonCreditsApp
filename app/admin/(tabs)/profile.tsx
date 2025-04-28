@@ -39,16 +39,6 @@ export default function ProfileDetails() {
           <Text style={styles.creditText}>Total: 1,450 Credits</Text>
         </Card.Content>
       </Card>
-
-      {/* Actions */}
-      <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => {}} style={styles.button}>
-          Edit Profile
-        </Button>
-        <Button mode="outlined" onPress={() => {}} style={styles.button}>
-          Logout
-        </Button>
-      </View>
     </ScrollView>
   );
 }

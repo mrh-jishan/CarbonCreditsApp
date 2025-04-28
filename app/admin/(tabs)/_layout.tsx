@@ -23,33 +23,29 @@ export default function Layout() {
         }}
       />
       <Tabs.Screen
-        name="analytics"
+        name="employers"
         options={{
-          title: "Analytics",
+          title: "Employers",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="bar-chart-outline" color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
-        name="fraud"
+        name="profile"
         options={{
-          title: "Fraud",
+          title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="shield-checkmark-outline"
-              color={color}
-              size={size}
-            />
+            <Ionicons name="person-outline" color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
-        name="logs"
+        name="newEmployer"
         options={{
-          title: "Logs",
+          title: "New Employer",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="file-tray-full-outline" color={color} size={size} />
+            <Ionicons name="briefcase-outline" color={color} size={size} />
           ),
         }}
       />
