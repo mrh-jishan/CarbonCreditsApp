@@ -21,27 +21,26 @@ export default function Users() {
 
   const backendApi = process.env.BACKEND_API_ENDPOINT;
 
+  const roles = [
+    { label: "All Roles", value: "users" },
+    { label: "Employee", value: "employees" },
+    { label: "Employer", value: "employers" },
+  ];
+
   const [employers, setEmployers] = useState<any>([]);
   const [open, setOpen] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState<string | null>("users");
   const { getToken } = useAuth();
-  const [roles, setRoles] = useState<any>([
-    {
-      label: "Employee",
-      value: "employee",
-    },
-    {
-      label: "Employer",
-      value: "employer",
-    },
-  ]);
+
   const [filteredEmployers, setFilteredEmployers] = useState<any>([]);
 
   useEffect(() => {
+    console.log("selectedRole", selectedRole);
+
     const fetchEmployers = async () => {
       const token = await getToken();
       try {
-        const response = await fetch(`${backendApi}/api/employers`, {
+        const response = await fetch(`${backendApi}/api/${selectedRole}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -55,7 +54,7 @@ export default function Users() {
       }
     };
     fetchEmployers();
-  }, []);
+  }, [selectedRole]);
 
   const handleFilterChange = (role: string | null) => {
     setSelectedRole(role);
@@ -78,9 +77,8 @@ export default function Users() {
         setOpen={setOpen}
         value={selectedRole}
         setValue={setSelectedRole}
-        items={[{ label: "All Roles", value: null }, ...roles]}
+        items={roles}
         placeholder="Filter by Role"
-        onChangeValue={handleFilterChange}
         style={styles.dropdown}
       />
 
@@ -89,6 +87,11 @@ export default function Users() {
         keyExtractor={(item) => item.id}
         renderItem={renderEmployee}
         contentContainerStyle={styles.list}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>No users to display</Text>
+          </View>
+        )}
       />
     </View>
   );
@@ -120,5 +123,14 @@ const styles = StyleSheet.create({
   creditText: {
     fontSize: 16,
     marginBottom: 8,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "gray",
   },
 });
