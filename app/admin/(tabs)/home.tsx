@@ -8,8 +8,7 @@ export default function Page() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const router = useRouter();
-
-  const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
+  const { roleName } = useRoles();
 
   const handleSignOut = async () => {
     try {
@@ -18,7 +17,6 @@ export default function Page() {
       console.error(JSON.stringify(err, null, 2));
     }
   };
-
 
   return (
     <ImageBackground style={styles.background} resizeMode="cover">
@@ -30,7 +28,14 @@ export default function Page() {
             Welcome, {user?.firstName || "User"} {user?.lastName}!
           </Text>
 
-          <Text>Logged in as Admin</Text>
+          <Text>
+            Logged in as{" "}
+            <Text style={{ fontWeight: "600" }}>
+              {user?.emailAddresses[0].emailAddress}
+              <Text style={styles.role}>{` (${roleName})`}</Text>
+            </Text>
+          </Text>
+          {/* <Text>Logged in as Admin</Text> */}
 
           {/* Quick Actions */}
           <View style={{ marginTop: 16 }}>
@@ -55,7 +60,7 @@ export default function Page() {
             >
               Show Profile
             </Button>
-          </View>          
+          </View>
         </View>
 
         <Button mode="outlined" onPress={handleSignOut} style={styles.button}>
@@ -90,5 +95,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 8,
+  },
+  role: {
+    fontSize: 14,
+    color: "#4CAF50",
+    fontWeight: "bold",
   },
 });

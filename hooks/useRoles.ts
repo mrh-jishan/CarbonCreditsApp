@@ -13,5 +13,12 @@ export const useRoles = () => {
   const isEmployer = roles.includes("org:carbon_credits_employer");
   const isBank = roles.includes("org:carbon_credits_bank");
 
-  return { roles, isAdmin, isEmployee, isEmployer, isBank };
+  const roleName =
+    (isAdmin && "Admin") ||
+    (isEmployee && "Employee") ||
+    (isEmployer && "Employer") ||
+    (isBank && "Bank") ||
+    "Unknown";
+
+  return { roles, isAdmin, isEmployee, isEmployer, isBank, roleName };
 };

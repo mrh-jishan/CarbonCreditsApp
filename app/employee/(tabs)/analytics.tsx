@@ -48,7 +48,7 @@ export default function Analytics() {
           .then((response) => response.json())
           .then((data) => {
             // Handle the fetched data
-            console.log("data---->", data);
+            // console.log("data---->", data);
             setAnalyticsData(data);
           })
           .catch((error) => {

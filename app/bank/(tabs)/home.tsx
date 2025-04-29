@@ -19,7 +19,6 @@ export default function Page() {
     }
   };
 
-
   // source={matches}
   return (
     <ImageBackground style={styles.background} resizeMode="cover">
@@ -31,9 +30,14 @@ export default function Page() {
             Welcome, {user?.firstName || "User"}!
           </Text>
 
-          <Text>Logged in as Bank</Text>
+          <Text>
+            Logged in as{" "}
+            <Text style={{ fontWeight: "600" }}>
+              {user?.emailAddresses[0].emailAddress}
+            </Text>
+          </Text>
+          {/* <Text>Logged in as Bank</Text> */}
 
-  
           {/* Quick Actions */}
           <View style={{ marginTop: 16 }}>
             <Button
@@ -58,8 +62,6 @@ export default function Page() {
               Audit
             </Button>
           </View>
-
-          
         </View>
 
         <Button mode="outlined" onPress={handleSignOut} style={styles.button}>
