@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
 import { Card, Button, Divider } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 
 export default function Reports() {
   const { getToken } = useAuth();
+  const router = useRouter();
 
   const [transactionData, setTransactionData] = useState<any>({
     total_points: 0,
@@ -40,6 +42,27 @@ export default function Reports() {
 
     fetchTokenAndData();
   }, []);
+
+  const insertBulkData = async () => {
+    console.log("Inserting bulk data...", backendApi);
+    const token = await getToken();
+    fetch(`${backendApi}/api/seeds`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({}),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Data inserted successfully:", data);
+        router.navigate("/employer/(tabs)/home");
+      })
+      .catch((error) => {
+        console.error("Error inserting data:", error);
+      });
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -91,6 +114,15 @@ export default function Reports() {
             }
           />
         </Card.Content>
+        <Card.Actions>
+          <Button
+            mode="contained"
+            onPress={insertBulkData}
+            style={{ marginTop: 8 }}
+          >
+            Create Data For Employee
+          </Button>
+        </Card.Actions>
       </Card>
     </ScrollView>
   );

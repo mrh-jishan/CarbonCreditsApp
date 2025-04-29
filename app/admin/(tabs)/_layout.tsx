@@ -49,13 +49,12 @@ export default function Layout() {
           ),
         }}
       />
-      //{" "}
       <Tabs.Screen
-        name="settings"
+        name="analytics"
         options={{
-          title: "Settings",
+          title: "Analytics",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" color={color} size={size} />
+            <Ionicons name="bar-chart-outline" color={color} size={size} />
           ),
         }}
       />
