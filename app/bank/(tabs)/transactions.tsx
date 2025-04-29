@@ -1,64 +1,104 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import { Card, Button } from "react-native-paper";
+import { useAuth } from "@clerk/clerk-expo";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
+import { Card, Button, Divider } from "react-native-paper";
+import { MaterialIcons } from "@expo/vector-icons";
 
-const transactions = [
-  {
-    id: "1",
-    type: "Approval",
-    description: "Approved 500 credits for John Doe",
-    date: "2025-04-01",
-  },
-  {
-    id: "2",
-    type: "Rejection",
-    description: "Rejected 300 credits for Jane Smith",
-    date: "2025-04-02",
-  },
-  {
-    id: "3",
-    type: "Approval",
-    description: "Approved 700 credits for Michael Brown",
-    date: "2025-04-03",
-  },
-];
+export default function Credits() {
+  const { getToken } = useAuth();
 
-export default function Transactions() {
-  const renderTransaction = ({ item }: any) => (
-    <Card style={styles.card}>
-      <Card.Title title={item.type} subtitle={`Date: ${item.date}`} />
-      <Card.Content>
-        <Text style={styles.description}>{item.description}</Text>
-      </Card.Content>
-      <Card.Actions>
-        <Button
-          mode="contained"
-          onPress={() =>
-            console.log(`Viewing details for transaction ${item.id}`)
-          }
-        >
-          View Details
-        </Button>
-      </Card.Actions>
-    </Card>
-  );
+  const [transactionData, setTransactionData] = useState<any>({
+    total_points: 0,
+    total_credits: 0,
+    breakdown: [],
+  });
+  const backendApi = process.env.BACKEND_API_ENDPOINT;
+
+  useEffect(() => {
+    const fetchTokenAndData = async () => {
+      try {
+        const token = await getToken();
+
+        fetch(`${backendApi}/api/transactions?scope=all`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setTransactionData(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching analytics data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching token or employee data:", error);
+      }
+    };
+
+    fetchTokenAndData();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Transactions</Text>
-      <FlatList
-        data={transactions}
-        keyExtractor={(item) => item.id}
-        renderItem={renderTransaction}
-        contentContainerStyle={styles.list}
-      />
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.header}>Your Carbon Credits</Text>
+
+      {/* Credits Summary */}
+      <Card style={styles.card}>
+        <Card.Title title="Credits Summary" />
+        <Card.Content>
+          <View style={styles.summaryRow}>
+            <MaterialIcons name="stars" size={24} color="#4CAF50" />
+            <Text style={styles.creditText}>
+              Total Credits: {transactionData.total_credits}
+            </Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <MaterialIcons name="emoji-events" size={24} color="#FFC107" />
+            <Text style={styles.creditText}>
+              Total Points: {transactionData.total_points}
+            </Text>
+          </View>
+        </Card.Content>
+      </Card>
+
+      {/* Transaction History */}
+      <Card style={styles.card}>
+        <Card.Title title="Transaction History" />
+        <Card.Content>
+          <FlatList
+            data={transactionData.breakdown}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.transactionRow}>
+                <MaterialIcons
+                  name="attach-money"
+                  size={20}
+                  color="#4CAF50"
+                  style={styles.transactionIcon}
+                />
+                <Text style={styles.transactionText}>
+                  + Earned {item.points} Credits ({item.transport_mode}) -{" "}
+                  {item.date}
+                </Text>
+              </View>
+            )}
+            ItemSeparatorComponent={() => <Divider style={styles.divider} />}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No transactions available.</Text>
+            }
+          />
+        </Card.Content>
+      </Card>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 16,
     backgroundColor: "#f5f5f5",
   },
@@ -68,16 +108,39 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     textAlign: "center",
   },
-  list: {
-    paddingBottom: 16,
-  },
   card: {
     marginBottom: 16,
     backgroundColor: "#ffffff",
   },
-  description: {
+  summaryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  creditText: {
+    fontSize: 16,
+    marginLeft: 8,
+    color: "#333",
+  },
+  transactionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  transactionIcon: {
+    marginRight: 8,
+  },
+  transactionText: {
     fontSize: 14,
-    marginBottom: 4,
     color: "#666",
+  },
+  divider: {
+    marginVertical: 8,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#999",
+    textAlign: "center",
+    marginTop: 8,
   },
 });

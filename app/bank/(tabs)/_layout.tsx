@@ -32,11 +32,11 @@ export default function Layout() {
       />
 
       <Tabs.Screen
-        name="dashboard"
+        name="profile"
         options={{
-          title: "Dashboard",
+          title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-circle-outline" color={color} size={size} />
+            <Ionicons name="person-outline" color={color} size={size} />
           ),
         }}
       />
