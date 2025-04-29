@@ -20,7 +20,9 @@ export default function Users() {
           </Text>
         </Card.Content>
 
-        {item.role_name != "Carbon Credits Admin" && (
+        {!["Carbon Credits Admin", "Carbon Credits Bank"].includes(
+          item.role_name
+        ) && (
           <Card.Actions>
             <Link
               href={`/employer/pages/carbonCredit/${item.public_user_data.user_id}`}
