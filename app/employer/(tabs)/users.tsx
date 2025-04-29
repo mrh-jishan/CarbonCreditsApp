@@ -1,30 +1,41 @@
 import { useAuth } from "@clerk/clerk-expo";
+import { Link, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { Card, Button } from "react-native-paper";
 
 export default function Users() {
-  const renderEmployee = ({ item }: any) => (
-    <Card style={styles.card}>
-      <Card.Title
-        title={`${item.public_user_data.first_name} ${item.public_user_data.last_name}`}
-        subtitle={`Role: ${item.role_name}`}
-      />
-      <Card.Content>
-        <Text style={styles.creditText}>
-          Email: {item.public_user_data.identifier}
-        </Text>
-      </Card.Content>
-    </Card>
-  );
+  const renderEmployee = ({ item }: any) => {
+    // console.log("item-----------: ", item);
+    return (
+      <Card style={styles.card}>
+        <Card.Title
+          title={`${item.public_user_data.first_name} ${item.public_user_data.last_name}`}
+          subtitle={`Role: ${item.role_name}`}
+        />
+        <Card.Content>
+          <Text style={styles.creditText}>
+            Email: {item.public_user_data.identifier}
+          </Text>
+        </Card.Content>
+        <Card.Actions>
+          <Link
+            href={`/employer/pages/carbonCredit/${item.public_user_data.user_id}`}
+          >
+            <Text style={{ color: "blue" }}>View Details</Text>
+          </Link>
+        </Card.Actions>
+      </Card>
+    );
+  };
 
   const backendApi = process.env.BACKEND_API_ENDPOINT;
 
   const roles = [
     { label: "All Roles", value: "users" },
-    { label: "Employee", value: "employees" },
-    { label: "Employer", value: "employers" },
+    { label: "Employees", value: "employees" },
+    { label: "Employers", value: "employers" },
   ];
 
   const [employers, setEmployers] = useState<any>([]);
@@ -35,7 +46,7 @@ export default function Users() {
   const [filteredEmployers, setFilteredEmployers] = useState<any>([]);
 
   useEffect(() => {
-    console.log("selectedRole", selectedRole);
+    // console.log("selectedRole", selectedRole);
 
     const fetchEmployers = async () => {
       const token = await getToken();
