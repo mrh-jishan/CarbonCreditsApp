@@ -8,6 +8,29 @@ export default function CarbonCredit() {
   const { userId } = useLocalSearchParams();
   const [user, setUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<any>(null);
+  const [carbonCreditData, setCarbonCreditData] = useState<any>({
+    total_points: 0,
+    total_credits: 0,
+    breakdown: {
+      public_transport: {
+        count: 0,
+        points: 0,
+      },
+      carpooling: {
+        count: 0,
+        points: 0,
+      },
+      work_from_home: {
+        count: 0,
+        points: 0,
+      },
+      private_vehicle: {
+        count: 0,
+        points: 0,
+      },
+    },
+  });
+
   const { getToken } = useAuth();
   const backendApi = process.env.BACKEND_API_ENDPOINT;
 
@@ -23,33 +46,8 @@ export default function CarbonCredit() {
           },
         });
         const { user, role } = await response.json();
-        // console.log("user----: ", user);
-        // console.log("role----: ", role.data);
         setUserRole(role.data[0]);
         setUser(user);
-      } catch (error) {
-        console.error("Error fetching employer data:", error);
-      }
-    };
-    // fetchUser();
-  }, [userId]);
-
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const token = await getToken();
-      try {
-        const response = await fetch(`${backendApi}/api/carbon_credits/${userId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        console.log("data----: ", data);
-        // console.log("role----: ", role.data);
-       
       } catch (error) {
         console.error("Error fetching employer data:", error);
       }
@@ -57,18 +55,30 @@ export default function CarbonCredit() {
     fetchUser();
   }, [userId]);
 
-  // console.log("params", params);
-  // console.log("user", user);
-
-  // Determine the role of the user
-  // const role = "employer"; // Assuming the role is passed in params or stored in `publicMetadata`
-
-  const carbonCreditData = {
-    public_transport: 20,
-    carpooling: 15,
-    work_from_home: 10,
-    private_vehicle: 5,
-  };
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = await getToken();
+      try {
+        const response = await fetch(
+          `${backendApi}/api/carbon_credits/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const data = await response.json();
+        console.log("data----: ", data);
+        // console.log("role----: ", role.data);
+        setCarbonCreditData(data);
+      } catch (error) {
+        console.error("Error fetching employer data:", error);
+      }
+    };
+    fetchUser();
+  }, [userId]);
 
   if (!userRole) {
     return (
@@ -118,22 +128,28 @@ export default function CarbonCredit() {
           <Card.Content>
             <Text style={styles.text}>
               🌱 You have earned{" "}
-              <Text style={styles.highlight}>50 Carbon Credits</Text> this
-              month.
+              <Text style={styles.highlight}>
+                {carbonCreditData.total_credits} Carbon Credits
+              </Text>{" "}
+              this period of time.
             </Text>
             <Text style={styles.text}>Breakdown of your credits:</Text>
             <View style={styles.breakdown}>
               <Text style={styles.breakdownItem}>
-                🚴‍♂️ Public Transport: {carbonCreditData.public_transport} Credits
+                🚴‍♂️ Public Transport:{" "}
+                {carbonCreditData.breakdown.public_transport.points} Credits
               </Text>
               <Text style={styles.breakdownItem}>
-                🚗 Carpooling: {carbonCreditData.carpooling} Credits
+                🚗 Carpooling: {carbonCreditData.breakdown.carpooling.points}{" "}
+                Credits
               </Text>
               <Text style={styles.breakdownItem}>
-                🏠 Work From Home: {carbonCreditData.work_from_home} Credits
+                🏠 Work From Home:{" "}
+                {carbonCreditData.breakdown.work_from_home.points} Credits
               </Text>
               <Text style={styles.breakdownItem}>
-                🚙 Private Vehicle: {carbonCreditData.private_vehicle} Credits
+                🚙 Private Vehicle:{" "}
+                {carbonCreditData.breakdown.private_vehicle.points} Credits
               </Text>
             </View>
           </Card.Content>
@@ -144,19 +160,27 @@ export default function CarbonCredit() {
           <Card.Content>
             <Text style={styles.text}>
               🏢 Your company has{" "}
-              <Text style={styles.highlight}>500 Carbon Credits</Text>{" "}
+              <Text style={styles.highlight}>
+                {" "}
+                {carbonCreditData.total_points} Carbon Points
+              </Text>{" "}
               available.
             </Text>
             <Text style={styles.text}>Breakdown of your credits:</Text>
             <View style={styles.breakdown}>
               <Text style={styles.breakdownItem}>
-                💡 Energy Efficiency: 200 Credits
+                💡 Energy Efficiency:{" "}
+                {carbonCreditData.breakdown.public_transport.points +
+                  carbonCreditData.breakdown.work_from_home.points}{" "}
+                Credits
               </Text>
               <Text style={styles.breakdownItem}>
-                🗑️ Waste Management: 150 Credits
+                🗑️ Private Vehicle:{" "}
+                {carbonCreditData.breakdown.private_vehicle.points} Credits
               </Text>
               <Text style={styles.breakdownItem}>
-                🎁 Employee Incentives: 150 Credits
+                🎁 Employee Incentives:{" "}
+                {carbonCreditData.breakdown.carpooling.points} Credits
               </Text>
             </View>
           </Card.Content>
@@ -172,9 +196,7 @@ export default function CarbonCredit() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    flexGrow: 1,
     padding: 16,
     backgroundColor: "#f5f5f5",
   },
@@ -182,11 +204,12 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
+    textAlign: "center",
   },
   card: {
     marginBottom: 16,
-    width: "100%",
-    maxWidth: 400,
+    // width: "100%",
+    // maxWidth: 400,
     backgroundColor: "#ffffff",
   },
   label: {

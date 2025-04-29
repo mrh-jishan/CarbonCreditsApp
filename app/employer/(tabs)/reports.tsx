@@ -1,52 +1,97 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { Card, Button } from "react-native-paper";
+import { useAuth } from "@clerk/clerk-expo";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
+import { Card, Button, Divider } from "react-native-paper";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Reports() {
+  const { getToken } = useAuth();
+
+  const [transactionData, setTransactionData] = useState<any>({
+    total_points: 0,
+    total_credits: 0,
+    breakdown: [],
+  });
+  const backendApi = process.env.BACKEND_API_ENDPOINT;
+
+  useEffect(() => {
+    const fetchTokenAndData = async () => {
+      try {
+        const token = await getToken();
+
+        fetch(`${backendApi}/api/transactions?scope=all`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setTransactionData(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching analytics data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching token or employee data:", error);
+      }
+    };
+
+    fetchTokenAndData();
+  }, []);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Reports</Text>
+      <Text style={styles.header}>Your Carbon Credits</Text>
 
-      {/* Monthly Carbon Footprint Report */}
+      {/* Credits Summary */}
       <Card style={styles.card}>
-        <Card.Title title="Monthly Carbon Footprint" />
+        <Card.Title title="Credits Summary" />
         <Card.Content>
-          <Text style={styles.reportText}>Total Carbon Credits: 10,000</Text>
-          <Text style={styles.reportText}>
-            Average Employee Contribution: 500 Credits
-          </Text>
-          <Text style={styles.reportText}>
-            Top Contributor: John Doe (1,200 Credits)
-          </Text>
+          <View style={styles.summaryRow}>
+            <MaterialIcons name="stars" size={24} color="#4CAF50" />
+            <Text style={styles.creditText}>
+              Total Credits: {transactionData.total_credits}
+            </Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <MaterialIcons name="emoji-events" size={24} color="#FFC107" />
+            <Text style={styles.creditText}>
+              Total Points: {transactionData.total_points}
+            </Text>
+          </View>
         </Card.Content>
-        <Card.Actions>
-          <Button
-            mode="contained"
-            onPress={() => console.log("Viewing Monthly Report")}
-          >
-            View Full Report
-          </Button>
-        </Card.Actions>
       </Card>
 
-      {/* Yearly Performance Report */}
+      {/* Transaction History */}
       <Card style={styles.card}>
-        <Card.Title title="Yearly Performance" />
+        <Card.Title title="Transaction History" />
         <Card.Content>
-          <Text style={styles.reportText}>Total Credits Earned: 120,000</Text>
-          <Text style={styles.reportText}>Total Employees: 50</Text>
-          <Text style={styles.reportText}>Credits Traded: 30,000</Text>
+          <FlatList
+            data={transactionData.breakdown}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.transactionRow}>
+                <MaterialIcons
+                  name="attach-money"
+                  size={20}
+                  color="#4CAF50"
+                  style={styles.transactionIcon}
+                />
+                <Text style={styles.transactionText}>
+                  + Earned {item.points} Credits ({item.transport_mode}) -{" "}
+                  {item.date}
+                </Text>
+              </View>
+            )}
+            ItemSeparatorComponent={() => <Divider style={styles.divider} />}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No transactions available.</Text>
+            }
+          />
         </Card.Content>
-        <Card.Actions>
-          <Button
-            mode="contained"
-            onPress={() => console.log("Viewing Yearly Report")}
-          >
-            View Full Report
-          </Button>
-        </Card.Actions>
       </Card>
-
     </ScrollView>
   );
 }
@@ -67,12 +112,35 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: "#ffffff",
   },
-  reportText: {
+  summaryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  creditText: {
     fontSize: 16,
-    marginBottom: 4,
+    marginLeft: 8,
+    color: "#333",
+  },
+  transactionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  transactionIcon: {
+    marginRight: 8,
+  },
+  transactionText: {
+    fontSize: 14,
     color: "#666",
   },
-  exportButton: {
-    marginTop: 16,
+  divider: {
+    marginVertical: 8,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#999",
+    textAlign: "center",
+    marginTop: 8,
   },
 });

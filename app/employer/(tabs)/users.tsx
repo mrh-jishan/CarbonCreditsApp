@@ -19,13 +19,16 @@ export default function Users() {
             Email: {item.public_user_data.identifier}
           </Text>
         </Card.Content>
-        <Card.Actions>
-          <Link
-            href={`/employer/pages/carbonCredit/${item.public_user_data.user_id}`}
-          >
-            <Text style={{ color: "blue" }}>View Details</Text>
-          </Link>
-        </Card.Actions>
+
+        {item.role_name != "Carbon Credits Admin" && (
+          <Card.Actions>
+            <Link
+              href={`/employer/pages/carbonCredit/${item.public_user_data.user_id}`}
+            >
+              <Text style={{ color: "blue" }}>View Details</Text>
+            </Link>
+          </Card.Actions>
+        )}
       </Card>
     );
   };

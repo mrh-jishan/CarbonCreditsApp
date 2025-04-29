@@ -1,12 +1,53 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { Avatar, Card, Button } from "react-native-paper";
-import { useUser } from "@clerk/clerk-expo";
+import { Avatar, Card } from "react-native-paper";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useRoles } from "@/hooks/useRoles";
 
 export default function ProfileDetails() {
   const { user } = useUser();
-  const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
+  const { roleName } = useRoles();
+
+  const { getToken } = useAuth();
+
+  const [analyticsData, setAnalyticsData] = useState<any>({
+    total_points: 0,
+    total_credits: 0,
+  });
+  const backendApi = process.env.BACKEND_API_ENDPOINT;
+
+  useEffect(() => {
+    const fetchTokenAndData = async () => {
+      try {
+        // Fetch the token
+        const token = await getToken();
+        // setToken(fetchedToken);
+        // console.log("Token fetched:", token);
+
+        fetch(`${backendApi}/api/analytics?scope=all`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the fetched data
+            // console.log("data---->", data);
+            setAnalyticsData(data);
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.error("Error fetching analytics data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching token or employee data:", error);
+      }
+    };
+
+    fetchTokenAndData();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -23,20 +64,19 @@ export default function ProfileDetails() {
         <Text style={styles.email}>
           {user?.emailAddresses?.[0]?.emailAddress}
         </Text>
-        <Text style={styles.role}>
-          {isAdmin && "Admin"}
-          {isEmployee && "Employee"}
-          {isEmployer && "Employer"}
-          {isBank && "Bank"}
-        </Text>
+        <Text style={styles.role}>{roleName}</Text>
       </View>
 
       {/* Carbon Credits Summary */}
       <Card style={styles.card}>
         <Card.Title title="Carbon Credits Summary" />
         <Card.Content>
-          <Text style={styles.creditText}>This Month: 120 Credits</Text>
-          <Text style={styles.creditText}>Total: 1,450 Credits</Text>
+          <Text style={styles.creditText}>
+            Total: {analyticsData.total_credits} Credits
+          </Text>
+          <Text style={styles.creditText}>
+            Total: {analyticsData.total_points} Points
+          </Text>
         </Card.Content>
       </Card>
     </ScrollView>

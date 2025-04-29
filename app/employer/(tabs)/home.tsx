@@ -9,7 +9,7 @@ export default function Page() {
   const { signOut } = useClerk();
   const router = useRouter();
 
-  const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
+  const { roleName } = useRoles();
 
   const handleSignOut = async () => {
     try {
@@ -35,6 +35,7 @@ export default function Page() {
               Logged in as{" "}
               <Text style={{ fontWeight: "600" }}>
                 {user?.emailAddresses[0].emailAddress}
+                <Text style={styles.role}>{` (${roleName})`}</Text>
               </Text>
             </Text>
 
@@ -97,5 +98,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginVertical: 8,
+  },
+  role: {
+    fontSize: 14,
+    color: "#4CAF50",
+    fontWeight: "bold",
   },
 });
