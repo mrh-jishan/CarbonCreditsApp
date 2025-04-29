@@ -21,22 +21,22 @@ export default function Page() {
         // setToken(fetchedToken);
         console.log("Token fetched:", token);
 
-        fetch(`${backendApi}/api/users`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            // Handle the fetched data
-            console.log("data---->", data);
-          })
-          .catch((error) => {
-            // Handle any errors
-            console.error("Error fetching employee data:", error);
-          });
+        // fetch(`${backendApi}/api/users`, {
+        //   method: "GET",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     Authorization: `Bearer ${token}`,
+        //   },
+        // })
+        //   .then((response) => response.json())
+        //   .then((data) => {
+        //     // Handle the fetched data
+        //     console.log("data---->", data);
+        //   })
+        //   .catch((error) => {
+        //     // Handle any errors
+        //     console.error("Error fetching employee data:", error);
+        //   });
 
         // Fetch employee data using the token
         // const response = await fetch("http://localhost:3000/api/users", {

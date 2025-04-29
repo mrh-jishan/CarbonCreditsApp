@@ -23,10 +23,33 @@ export default function CarbonCredit() {
           },
         });
         const { user, role } = await response.json();
-        console.log("user----: ", user);
-        console.log("role----: ", role.data);
+        // console.log("user----: ", user);
+        // console.log("role----: ", role.data);
         setUserRole(role.data[0]);
         setUser(user);
+      } catch (error) {
+        console.error("Error fetching employer data:", error);
+      }
+    };
+    // fetchUser();
+  }, [userId]);
+
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const token = await getToken();
+      try {
+        const response = await fetch(`${backendApi}/api/carbon_credits/${userId}`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        console.log("data----: ", data);
+        // console.log("role----: ", role.data);
+       
       } catch (error) {
         console.error("Error fetching employer data:", error);
       }
