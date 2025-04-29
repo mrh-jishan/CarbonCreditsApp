@@ -80,36 +80,38 @@ export default function Analytics() {
         </Card.Content>
       </Card>
 
+      {Object.keys(analyticsData.breakdown).length !== 0 && (
+        <Card style={styles.card}>
+          <Card.Title title="Commute Data" />
+          <Card.Content>
+            <Text style={styles.dataText}>
+              Public Transport:{" "}
+              <Text style={styles.dataNumber}>
+                {analyticsData.breakdown.public_transport.percentage}%
+              </Text>
+            </Text>
+            <Text style={styles.dataText}>
+              Carpooling:{" "}
+              <Text style={styles.dataNumber}>
+                {analyticsData.breakdown.carpooling.percentage}%
+              </Text>
+            </Text>
+            <Text style={styles.dataText}>
+              Work From Home:{" "}
+              <Text style={styles.dataNumber}>
+                {analyticsData.breakdown.work_from_home.percentage}%
+              </Text>
+            </Text>
+            <Text style={styles.dataText}>
+              Private Vehicle:{" "}
+              <Text style={styles.dataNumber}>
+                {analyticsData.breakdown.private_vehicle.percentage}%
+              </Text>
+            </Text>
+          </Card.Content>
+        </Card>
+      )}
       {/* Commute Data */}
-      <Card style={styles.card}>
-        <Card.Title title="Commute Data" />
-        <Card.Content>
-          <Text style={styles.dataText}>
-            Public Transport:{" "}
-            <Text style={styles.dataNumber}>
-              {analyticsData.breakdown.public_transport.percentage}%
-            </Text>
-          </Text>
-          <Text style={styles.dataText}>
-            Carpooling:{" "}
-            <Text style={styles.dataNumber}>
-              {analyticsData.breakdown.carpooling.percentage}%
-            </Text>
-          </Text>
-          <Text style={styles.dataText}>
-            Work From Home:{" "}
-            <Text style={styles.dataNumber}>
-              {analyticsData.breakdown.work_from_home.percentage}%
-            </Text>
-          </Text>
-          <Text style={styles.dataText}>
-            Private Vehicle:{" "}
-            <Text style={styles.dataNumber}>
-              {analyticsData.breakdown.private_vehicle.percentage}%
-            </Text>
-          </Text>
-        </Card.Content>
-      </Card>
 
       {/* Progress Tracking */}
       {/* <Card style={styles.card}>
