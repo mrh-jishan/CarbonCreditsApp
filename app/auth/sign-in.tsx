@@ -4,13 +4,12 @@ import { Text, TextInput, Button } from "react-native-paper";
 import React, { useCallback, useState } from "react";
 import { View, Image, StyleSheet } from "react-native";
 
-const backendApi = process.env.BACKEND_API_ENDPOINT
 
 export default function SignIn() {
   const { signIn, setActive, isLoaded } = useSignIn();
   const router = useRouter();
   const { getToken } = useAuth();
-
+  const backendApi = process.env.BACKEND_API_ENDPOINT
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");

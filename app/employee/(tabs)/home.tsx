@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet, ImageBackground } from "react-native";
 import { Text, Button } from "react-native-paper";
 
-const backendApi = process.env.BACKEND_API_ENDPOINT
+
 
 export default function Page() {
   const { user } = useUser();
@@ -12,14 +12,14 @@ export default function Page() {
   const { getToken } = useAuth();
   const router = useRouter();
   // const [token, setToken] = useState<string | null>(null);
-
+  // const backendApi = process.env.BACKEND_API_ENDPOINT
   useEffect(() => {
     const fetchTokenAndData = async () => {
       try {
         // Fetch the token
         const token = await getToken();
         // setToken(fetchedToken);
-        console.log("Token fetched:", token);
+        // console.log("Token fetched:", token);
 
         // fetch(`${backendApi}/api/users`, {
         //   method: "GET",

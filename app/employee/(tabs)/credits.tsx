@@ -1,8 +1,46 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import { Card, Button } from "react-native-paper";
+import { useAuth } from "@clerk/clerk-expo";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
+import { Card, Button, Divider } from "react-native-paper";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Credits() {
+  const { getToken } = useAuth();
+
+  const [transactionData, setTransactionData] = useState<any>({
+    total_points: 0,
+    total_credits: 0,
+    breakdown: [],
+  });
+  const backendApi = process.env.BACKEND_API_ENDPOINT;
+
+  useEffect(() => {
+    const fetchTokenAndData = async () => {
+      try {
+        const token = await getToken();
+
+        fetch(`${backendApi}/api/transactions`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            setTransactionData(data);
+          })
+          .catch((error) => {
+            console.error("Error fetching analytics data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching token or employee data:", error);
+      }
+    };
+
+    fetchTokenAndData();
+  }, []);
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.header}>Your Carbon Credits</Text>
@@ -11,8 +49,18 @@ export default function Credits() {
       <Card style={styles.card}>
         <Card.Title title="Credits Summary" />
         <Card.Content>
-          <Text style={styles.creditText}>Available Credits: 1,200</Text>
-          <Text style={styles.creditText}>Total Earned: 5,000</Text>
+          <View style={styles.summaryRow}>
+            <MaterialIcons name="stars" size={24} color="#4CAF50" />
+            <Text style={styles.creditText}>
+              Total Credits: {transactionData.total_credits}
+            </Text>
+          </View>
+          <View style={styles.summaryRow}>
+            <MaterialIcons name="emoji-events" size={24} color="#FFC107" />
+            <Text style={styles.creditText}>
+              Total Points: {transactionData.total_points}
+            </Text>
+          </View>
         </Card.Content>
       </Card>
 
@@ -20,23 +68,30 @@ export default function Credits() {
       <Card style={styles.card}>
         <Card.Title title="Transaction History" />
         <Card.Content>
-          <Text style={styles.transactionText}>- Purchased 200 Credits</Text>
-          <Text style={styles.transactionText}>
-            + Earned 100 Credits (Commute)
-          </Text>
-          <Text style={styles.transactionText}>- Redeemed 50 Credits</Text>
+          <FlatList
+            data={transactionData.breakdown}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.transactionRow}>
+                <MaterialIcons
+                  name="attach-money"
+                  size={20}
+                  color="#4CAF50"
+                  style={styles.transactionIcon}
+                />
+                <Text style={styles.transactionText}>
+                  + Earned {item.points} Credits ({item.transport_mode}) -{" "}
+                  {item.date}
+                </Text>
+              </View>
+            )}
+            ItemSeparatorComponent={() => <Divider style={styles.divider} />}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No transactions available.</Text>
+            }
+          />
         </Card.Content>
       </Card>
-
-      {/* Actions */}
-      <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => {}} style={styles.button}>
-          Redeem Credits
-        </Button>
-        <Button mode="outlined" onPress={() => {}} style={styles.button}>
-          Trade Credits
-        </Button>
-      </View>
     </ScrollView>
   );
 }
@@ -57,22 +112,35 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     backgroundColor: "#ffffff",
   },
+  summaryRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
   creditText: {
     fontSize: 16,
-    marginBottom: 4,
+    marginLeft: 8,
+    color: "#333",
+  },
+  transactionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  transactionIcon: {
+    marginRight: 8,
   },
   transactionText: {
     fontSize: 14,
-    marginBottom: 4,
     color: "#666",
   },
-  buttonContainer: {
-    marginTop: 16,
-    flexDirection: "row",
-    justifyContent: "space-between",
+  divider: {
+    marginVertical: 8,
   },
-  button: {
-    flex: 1,
-    marginHorizontal: 8,
+  emptyText: {
+    fontSize: 14,
+    color: "#999",
+    textAlign: "center",
+    marginTop: 8,
   },
 });

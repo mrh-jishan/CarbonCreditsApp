@@ -1,12 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Avatar, Card, Button } from "react-native-paper";
-import { useUser } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useRoles } from "@/hooks/useRoles";
 
-export default function Employee() {
+export default function Profile() {
   const { user } = useUser();
+   const { getToken } = useAuth();
   const { isAdmin, isEmployee, isEmployer, isBank } = useRoles();
+
+  const backendApi = process.env.BACKEND_API_ENDPOINT;
+
+  const [analyticsData, setAnalyticsData] = useState<any>({
+    total_points: 0,
+    total_credits: 0,
+    breakdown: {
+      public_transport: {
+        count: 0,
+        points: 0,
+      },
+      carpooling: {
+        count: 0,
+        points: 0,
+      },
+      work_from_home: {
+        count: 0,
+        points: 0,
+      },
+      private_vehicle: {
+        count: 0,
+        points: 0,
+      },
+    },
+  });
+
+  useEffect(() => {
+    const fetchTokenAndData = async () => {
+      try {
+        // Fetch the token
+        const token = await getToken();
+        // setToken(fetchedToken);
+        // console.log("Token fetched:", token);
+
+        fetch(`${backendApi}/api/analytics`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the fetched data
+            // console.log("data---->", data);
+            setAnalyticsData(data);
+          })
+          .catch((error) => {
+            // Handle any errors
+            console.error("Error fetching analytics data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching token or employee data:", error);
+      }
+    };
+
+    fetchTokenAndData();
+  }, []);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -35,17 +94,14 @@ export default function Employee() {
       <Card style={styles.card}>
         <Card.Title title="Carbon Credits Summary" />
         <Card.Content>
-          <Text style={styles.creditText}>This Month: 120 Credits</Text>
-          <Text style={styles.creditText}>Total: 1,450 Credits</Text>
+          <Text style={styles.creditText}>
+            Total: {analyticsData.total_credits} Credits
+          </Text>
+          <Text style={styles.creditText}>
+            Total: {analyticsData.total_points} Points
+          </Text>
         </Card.Content>
       </Card>
-
-      {/* Actions */}
-      <View style={styles.buttonContainer}>
-        <Button mode="contained" onPress={() => {}} style={styles.button}>
-          Edit Profile
-        </Button>
-      </View>
     </ScrollView>
   );
 }
@@ -97,3 +153,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
 });
+function getToken() {
+  throw new Error("Function not implemented.");
+}
