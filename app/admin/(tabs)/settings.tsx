@@ -1,69 +1,45 @@
+import { useRouter } from "expo-router";
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Card, Button } from "react-native-paper";
 
-export default function Admin() {
+export default function Settings() {
+  const router = useRouter();
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Admin Dashboard</Text>
+      <Text style={styles.header}>Admin Settings</Text>
 
-      {/* System Statistics */}
+      {/* Manage Users */}
       <Card style={styles.card}>
-        <Card.Title title="System Statistics" />
+        <Card.Title title="Manage Users" />
         <Card.Content>
-          <Text style={styles.statText}>Total Carbon Credits: 1,000,000</Text>
-          <Text style={styles.statText}>Total Users: 5,000</Text>
-          <Text style={styles.statText}>Total Trades: 10,000</Text>
-        </Card.Content>
-      </Card>
-
-      {/* Fraud Detection */}
-      <Card style={styles.card}>
-        <Card.Title title="Fraud Detection" />
-        <Card.Content>
-          <Text style={styles.statText}>Suspicious Activities: 5</Text>
+          <Text style={styles.statText}>Add, edit, or remove users.</Text>
         </Card.Content>
         <Card.Actions>
           <Button
             mode="contained"
-            onPress={() => console.log("Viewing Fraud Reports")}
-          >
-            View Fraud Reports
-          </Button>
-        </Card.Actions>
-      </Card>
-
-      {/* User Management */}
-      <Card style={styles.card}>
-        <Card.Title title="User Management" />
-        <Card.Content>
-          <Text style={styles.statText}>Pending Employer Approvals: 10</Text>
-          <Text style={styles.statText}>Pending Employee Approvals: 20</Text>
-        </Card.Content>
-        <Card.Actions>
-          <Button
-            mode="contained"
-            onPress={() => console.log("Managing Users")}
+            onPress={() => router.navigate("/admin/(tabs)/users")}
           >
             Manage Users
           </Button>
         </Card.Actions>
       </Card>
 
-      {/* System Reports */}
+      {/* View Reports */}
       <Card style={styles.card}>
-        <Card.Title title="System Reports" />
+        <Card.Title title="Add Employer" />
         <Card.Content>
           <Text style={styles.statText}>
-            Generate detailed system-wide reports.
+            Add new Employer to the system.
           </Text>
         </Card.Content>
         <Card.Actions>
           <Button
             mode="contained"
-            onPress={() => console.log("Generating Reports")}
+            onPress={() => router.navigate("/admin/(tabs)/newEmployer")}
           >
-            Generate Reports
+            Add Employer
           </Button>
         </Card.Actions>
       </Card>
