@@ -134,24 +134,26 @@ export default function CarbonCredit() {
               this period of time.
             </Text>
             <Text style={styles.text}>Breakdown of your credits:</Text>
-            <View style={styles.breakdown}>
-              <Text style={styles.breakdownItem}>
-                🚴‍♂️ Public Transport:{" "}
-                {carbonCreditData.breakdown.public_transport.points} Credits
-              </Text>
-              <Text style={styles.breakdownItem}>
-                🚗 Carpooling: {carbonCreditData.breakdown.carpooling.points}{" "}
-                Credits
-              </Text>
-              <Text style={styles.breakdownItem}>
-                🏠 Work From Home:{" "}
-                {carbonCreditData.breakdown.work_from_home.points} Credits
-              </Text>
-              <Text style={styles.breakdownItem}>
-                🚙 Private Vehicle:{" "}
-                {carbonCreditData.breakdown.private_vehicle.points} Credits
-              </Text>
-            </View>
+            {Object.keys(carbonCreditData.breakdown).length !== 0 && (
+              <View style={styles.breakdown}>
+                <Text style={styles.breakdownItem}>
+                  🚴‍♂️ Public Transport:{" "}
+                  {carbonCreditData.breakdown.public_transport.points} Credits
+                </Text>
+                <Text style={styles.breakdownItem}>
+                  🚗 Carpooling: {carbonCreditData.breakdown.carpooling.points}{" "}
+                  Credits
+                </Text>
+                <Text style={styles.breakdownItem}>
+                  🏠 Work From Home:{" "}
+                  {carbonCreditData.breakdown.work_from_home.points} Credits
+                </Text>
+                <Text style={styles.breakdownItem}>
+                  🚙 Private Vehicle:{" "}
+                  {carbonCreditData.breakdown.private_vehicle.points} Credits
+                </Text>
+              </View>
+            )}
           </Card.Content>
         </Card>
       ) : userRole.role === "org:carbon_credits_employer" ? (
@@ -167,22 +169,24 @@ export default function CarbonCredit() {
               available.
             </Text>
             <Text style={styles.text}>Breakdown of your credits:</Text>
-            <View style={styles.breakdown}>
-              <Text style={styles.breakdownItem}>
-                💡 Energy Efficiency:{" "}
-                {carbonCreditData.breakdown.public_transport.points +
-                  carbonCreditData.breakdown.work_from_home.points}{" "}
-                Credits
-              </Text>
-              <Text style={styles.breakdownItem}>
-                🗑️ Private Vehicle:{" "}
-                {carbonCreditData.breakdown.private_vehicle.points} Credits
-              </Text>
-              <Text style={styles.breakdownItem}>
-                🎁 Employee Incentives:{" "}
-                {carbonCreditData.breakdown.carpooling.points} Credits
-              </Text>
-            </View>
+            {Object.keys(carbonCreditData.breakdown).length !== 0 && (
+              <View style={styles.breakdown}>
+                <Text style={styles.breakdownItem}>
+                  💡 Energy Efficiency:{" "}
+                  {carbonCreditData.breakdown.public_transport.points +
+                    carbonCreditData.breakdown.work_from_home.points}{" "}
+                  Credits
+                </Text>
+                <Text style={styles.breakdownItem}>
+                  🗑️ Private Vehicle:{" "}
+                  {carbonCreditData.breakdown.private_vehicle.points} Credits
+                </Text>
+                <Text style={styles.breakdownItem}>
+                  🎁 Employee Incentives:{" "}
+                  {carbonCreditData.breakdown.carpooling.points} Credits
+                </Text>
+              </View>
+            )}
           </Card.Content>
         </Card>
       ) : (
